@@ -23,30 +23,25 @@ def readDataMatrix(cam):
             if not ret:
                 print("Falha ao capturar imagem da câmera.")
                 break
-            # roi = cv2.selectROI(frame)
-            # print(roi)  
-            # x,y,h,w = (448, 194, 682, 521)
-            x,y,h,w = (656, 401 , 264, 224) #+100
+          
+            x,y,h,w = (656, 401 , 264, 224) 
             cutQR = frame[y:y+w, x:x+h]
 
             cv2.imshow("Data Matrix Detected", cutQR)
             cv2.waitKey(1)
           
             gray_image = cv2.cvtColor(cutQR, cv2.COLOR_BGR2GRAY)
-            # cv2.imshow("Data Matrix Detected", gray_image)
-            # cv2.waitKey(1)
 
             decoded_objects = decode(gray_image)
 
-            if (time.time() >= startCont + 100):
+            if (time.time() >= startCont + 12):
                 camLigado = False
                 with open(serial_log, 'w') as file:
                     file.write("FAIL")
-                camLigado = False
-                # cv2.destroyAllWindows()
+                camLigado = False      
 
             if decoded_objects:
-                # print(decoded_objects)
+
                 for obj in decoded_objects: 
 
                     serial = obj.data.decode('utf-8') 
@@ -57,8 +52,6 @@ def readDataMatrix(cam):
                         
                     camLigado = False
                             
-
-
         except Exception as e:
             print("Erro ao ler data matrix :", e)
     
@@ -72,7 +65,6 @@ def captureImage():
     capturaImage.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     capturaImage.set(cv2.CAP_PROP_FRAME_HEIGHT, 1024)
     capturaImage.set(cv2.CAP_PROP_FOCUS,  190)
-    # capturaImage.set(cv2.CAP_PROP_EXPOSURE, -7)
     readDataMatrix(capturaImage)
 
     
